@@ -1,0 +1,6 @@
+*.o
+*.plantuml
+*.json
+*.out
+*.png
+*.jpg
