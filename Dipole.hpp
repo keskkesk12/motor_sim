@@ -21,8 +21,19 @@
 
 
 class Dipole {
-
+  float current;
+  float orientation;
+  float radius;
 public:
+  Dipole(float offset, float height, float orientation, float current, float radius, int res);
+  Dipole(cv::Point2f pos, float orientation, float current, float radius, float res);
+  std::vector<FieldVector> dipole_wire_vectors;
+  cv::Vec3d getFieldVectorAtPos(cv::Vec3d);
+  cv::Vec3d calcFieldStrength(FieldVector, cv::Vec3d);
+  cv::Vec3d forceOnWireDL(FieldVector, float);
+  cv::Vec3d forceOnDipoleFromField(std::vector<std::vector<cv::Vec3d>>& magnetic_field);
 
+  // Get methods
+  float getCurrent();
 };
 

@@ -36,10 +36,11 @@ public:
   World(float dt, Motor, Controller);
   void update();
   float getTime();
-  void generateField();
+  void generateField(double);
   cv::Mat renderMotor();
   cv::Mat renderMagnitudeField();
   cv::Mat renderVectorField();
+  cv::Mat renderNorthSouth();
   std::vector<std::vector<cv::Vec3d>> getMagneticField();
 };
 

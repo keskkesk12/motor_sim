@@ -22,7 +22,7 @@
 
 class Coil {
   cv::Point2d position;
-  float current = 10000;
+  float current = 0;
   float orientation;
   float L;
   float r;
@@ -34,11 +34,11 @@ public:
 
   std::vector<FieldVector> coil_wire_vectors;
   void update(float time);
+  void setCurrent(float);
 
   cv::Vec3d calcFieldStrength(FieldVector, cv::Vec3d);
-  void setCurrent(float);
-  cv::Vec2d getFieldVectorAtPos(cv::Vec2d);
   cv::Vec3d getFieldVectorAtPos(cv::Vec3d);
+  cv::Vec3d forceOnWireDL(FieldVector, float);
   cv::Mat renderCoil_yz();
   cv::Mat renderCoil_xz();
   cv::Mat renderCoil_xy();

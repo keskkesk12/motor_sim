@@ -41,17 +41,33 @@ float World::getTime(){
 }
 
 
-void World::generateField(){
+void World::generateField(double z){
   // Generate vector field in xy-plane at given z-height
-  float z = 0;
+
+  // Reset magnetic field
+  magnetic_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+
+  // Center view
   cv::Vec3d offset(-300, -300, 0);
   
+  // Generate field for coils
   for(int n = 0; n < motor.getCoils().size(); n++){
     Coil temp_coil = motor.getCoils()[n];
     for(int y = 0; y < magnetic_field.size(); y++){ // Row or Y
       for(int x = 0; x < magnetic_field[y].size(); x++){ // Collumn or X
         cv::Vec3d pos = cv::Vec3d(x, y, z) + offset;
         magnetic_field[y][x] += temp_coil.getFieldVectorAtPos(pos);
+      }
+    }
+  }
+
+  // Generate field for magnets
+  for(int n = 0; n < motor.getMagnets().size(); n++){
+    Magnet temp_magnet = motor.getMagnets()[n];
+    for(int y = 0; y < magnetic_field.size(); y++){ // Row or Y
+      for(int x = 0; x < magnetic_field[y].size(); x++){ // Collumn or X
+        cv::Vec3d pos = cv::Vec3d(x, y, z) + offset;
+        magnetic_field[y][x] += temp_magnet.getFieldVectorAtPos(pos);
       }
     }
   }
@@ -71,6 +87,7 @@ cv::Mat World::renderVectorField(){
   }
   cv::cvtColor(canvas, canvas, cv::COLOR_HSV2BGR);
 
+  // Field lines
   for(int y = 0; y < canvas.size().height; y++){
     for(int x = 0; x < canvas.size().width; x++){
       if(((y % 11) == 0) && ((x % 11) == 0)){
@@ -114,6 +131,8 @@ cv::Mat World::renderMagnitudeField(){
       }
     }
   }
+
+  // Field lines
   for(int y = 0; y < result.size().height; y++){
     for(int x = 0; x < result.size().width; x++){
       if(((y % 30) == 0) && ((x % 30) == 0)){
@@ -126,8 +145,36 @@ cv::Mat World::renderMagnitudeField(){
       }
     }
   }
+
+  // Summed up mag
+  cv::Vec3d mag_dir(0, 0, 0);
+  for(int y = 0; y < result.size().height; y++){
+    for(int x = 0; x < result.size().width; x++){
+      if(cv::norm(magnetic_field[y][x]) < 1000){
+        mag_dir += magnetic_field[y][x];
+      }
+    }
+  }
+  cv::Point offset = cv::Point(canvas_size.width/2, canvas_size.height/2);
+  cv::line(result, offset, offset + cv::Point(mag_dir[0], mag_dir[1]), cv::Scalar(123, 23, 241), 1);
+
   return result;
 }
+
+
+cv::Mat World::renderNorthSouth(){
+  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0));
+
+  for(int y = 0; y < canvas.size().height; y++){
+    for(int x = 0; x < canvas.size().width; x++){
+      cv::Vec3d color = {100, 12, 23};
+      canvas.at<cv::Vec3b>(cv::Point(x, y)) = color;
+    }
+  }
+
+  return canvas;
+}
+
 
 
 template <typename T> int sign(T val){

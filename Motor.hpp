@@ -19,33 +19,50 @@
 #include "Coil.hpp"
 #include "Dipole.hpp"
 #include "util.hpp"
+#include "Magnet.hpp"
+
+
 
 
 
 class Motor {
-  std::vector<Coil> coils;
-  std::vector<Dipole> dipoles;
-  float angle;
+  std::vector<Coil> U;
+  std::vector<Coil> V;
+  std::vector<Coil> W;
+  std::vector<Magnet> magnets;
+  float rotor_angle;
   float radius;
   float inertia;
   int poles;
   float dt;
+  float torque;
+  cv::Vec3d current; // U-V-W
 
 public:
   Motor(int poles, float r, float inertia, float dt);
   void generateCoils(float l, float offset, float r, int N, int res);
-  void generateDipoles(float l, float r, int N, int res);
-  void generateDl();
+  void generateMagnets(int N, int I, float depth, float height, float radius, int res);
+  std::vector<float> generateTorqueRippleVector();
+  float calculateTorque();
   void update(float dt);
 
+  // Set
+  void setRotorAngle(float angle);
   void setVoltages(float U, float V, float W);
   void setCurrents(float U, float V, float W);
-  std::vector<float> getCurrents();
+  void setCurrentVector(cv::Vec2d);
+  void setCurrentVector(float angle, float magnitude);
+
+  // Get
   float getAngle();
+  cv::Vec3d getCurrents();
   std::vector<Coil> getCoils();
-  std::vector<Dipole> getDipoles();
+  std::vector<Magnet> getMagnets();
 
   // Render
   cv::Mat renderMotorCoils();
+  cv::Mat renderMagnets();
+  cv::Mat renderMotor();
+  cv::Mat renderCurrentVector();
 };
 

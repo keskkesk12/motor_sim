@@ -16,6 +16,10 @@
 #include <opencv2/imgcodecs.hpp>
 
 
+#define RAD_2_DEG 57.295779579
+#define DEG_2_RAD 0.0174532925
+
+
 struct FieldVector{
   cv::Vec3d pos = cv::Vec3d(0, 0, 0);
   cv::Vec3d dir = cv::Vec3d(0, 0, 0);
@@ -30,3 +34,7 @@ cv::Point posToPixel(cv::Point p);
 cv::Point2d posOnCircle(float r, float angle);
 cv::Point2d rotateVector2D(cv::Point2d vector, float angle);
 cv::Vec3d rotateVector3D_z(cv::Vec3d vector, float angle);
+
+cv::Vec2d clark(cv::Vec3d);
+cv::Vec3d clarkInv(cv::Vec2d);
+

@@ -4,3 +4,8 @@
 *.out
 *.png
 *.jpg
+*.csv
+*.ods
+*.py
+
+
