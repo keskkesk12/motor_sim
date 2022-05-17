@@ -76,6 +76,44 @@ std::vector<float> Motor::generateTorqueRippleVector(){
 }
 
 
+cv::Vec3d Motor::getForceOnDipoleAtPos(Dipole temp_dipole){
+  cv::Vec3d force;
+
+  /* 
+    1) Run through all dl in given dipole.
+    2) Calculate force on dipole from all coils and dipoles in motor
+    3) Sum up all forces
+   */
+
+  // Get coils and magnets from motor
+  std::vector<Coil> coils = getCoils();
+  std::vector<Magnet> magnets = getMagnets();
+
+  // Run through all coils and dipoles in motor and calculate their force on the dipole
+  for(int dipole_dl_num = 0; dipole_dl_num < temp_dipole.dipole_wire_vectors.size(); dipole_dl_num++){
+    // Dipole dl
+    FieldVector field_vector = temp_dipole.dipole_wire_vectors[dipole_dl_num];
+    
+    // Calculate force form coils
+    for(int coil_num = 0; coil_num < coils.size(); coil_num++){
+      Coil coil = coils[coil_num];
+      force += coil.forceOnWireDL(field_vector, temp_dipole.getCurrent());
+    }
+
+    // Calculate force from dipoles
+    for(int magnet_num = 0; magnet_num < magnets.size(); magnet_num++){
+      std::vector<Dipole> dipoles = magnets[magnet_num].getDipoles();
+      for(int dipole_num = 0; dipole_num < dipoles.size(); dipole_num++){
+        Dipole dipole = dipoles[dipole_num];
+        force += dipole.forceOnWireDL(field_vector, temp_dipole.getCurrent());
+      }
+    }
+  }
+
+  return force;
+}
+
+
 float Motor::calculateTorque(){
   std::vector<Dipole> dipoles;
   // Get all dipoles in motor

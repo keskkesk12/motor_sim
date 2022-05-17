@@ -31,7 +31,6 @@ public:
   cv::Vec3d getFieldVectorAtPos(cv::Vec3d);
   cv::Vec3d calcFieldStrength(FieldVector, cv::Vec3d);
   cv::Vec3d forceOnWireDL(FieldVector, float);
-  cv::Vec3d forceOnDipoleFromField(std::vector<std::vector<cv::Vec3d>>& magnetic_field);
 
   // Get methods
   float getCurrent();

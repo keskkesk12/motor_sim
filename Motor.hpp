@@ -58,6 +58,7 @@ public:
   cv::Vec3d getCurrents();
   std::vector<Coil> getCoils();
   std::vector<Magnet> getMagnets();
+  cv::Vec3d getForceOnDipoleAtPos(Dipole);
 
   // Render
   cv::Mat renderMotorCoils();

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
 
 // opencv
 #include <opencv2/core/core.hpp>
@@ -20,7 +21,9 @@
 #include "World.hpp"
 #include "Controller.hpp"
 
-
+template <typename T> int sign(T val){
+  return (T(0) < val) - (val < T(0));
+}
 
 
 World::World(float _dt, Motor _motor, Controller _controller) :
@@ -28,6 +31,7 @@ World::World(float _dt, Motor _motor, Controller _controller) :
 {
   // Initialize magnetic field
   magnetic_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+  force_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
 }
 
 
@@ -162,24 +166,56 @@ cv::Mat World::renderMagnitudeField(){
 }
 
 
+
+
+void World::generateForceField(){
+  // Reset force field
+  force_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+
+  for(int y = 0; y < canvas_size.height; y++){
+    for(int x = 0; x < canvas_size.width; x++){
+      float angle = atan2(magnetic_field[y][x][1], magnetic_field[y][x][0]);
+
+      Dipole test_dipole = Dipole(cv::Point2f(-300 + x, -300 + y), angle, 100, 4, 4);
+
+      force_field[y][x] = motor.getForceOnDipoleAtPos(test_dipole);
+    }
+  }
+}
+
+
 cv::Mat World::renderNorthSouth(){
   cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0));
+  // cv::cvtColor(canvas, canvas, cv::COLOR_BGR2HSV);
 
-  for(int y = 0; y < canvas.size().height; y++){
-    for(int x = 0; x < canvas.size().width; x++){
-      cv::Vec3d color = {100, 12, 23};
-      canvas.at<cv::Vec3b>(cv::Point(x, y)) = color;
+  for(int x = 0; x < canvas.size().width; x++){
+    for(int y = 0; y < canvas.size().height; y++){
+      cv::Vec3d force_vec = force_field[y][x];
+      cv::Vec3d magnetic_field_vec = magnetic_field[y][x];
+
+      float value = force_vec.dot(magnetic_field_vec);
+      float mag = sign(value)*log10(abs(value)+1);
+
+      int color = mag * 50;
+
+      color = std::min(255, color);
+      color = std::max(-255, color);
+      
+      if(color > 0){
+        canvas.at<cv::Vec3b>(cv::Point(x, y)) = cv::Vec3b(0, 0, color);
+      }else{
+        canvas.at<cv::Vec3b>(cv::Point(x, y)) = cv::Vec3b(-color, 0, 0);
+      }
+
     }
   }
 
+  // cv::cvtColor(canvas, canvas, cv::COLOR_HSV2BGR);
   return canvas;
 }
 
 
 
-template <typename T> int sign(T val){
-  return (T(0) < val) - (val < T(0));
-}
 
 
 cv::Vec3b World::getColor(float field_strength){
@@ -204,3 +240,10 @@ cv::Vec3b World::getColor(cv::Vec3d vec){
 std::vector<std::vector<cv::Vec3d>> World::getMagneticField(){
   return magnetic_field;
 }
+
+
+std::vector<std::vector<cv::Vec3d>> World::getForceField(){
+  return force_field;
+}
+
+

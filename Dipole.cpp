@@ -176,15 +176,6 @@ cv::Vec3d Dipole::forceOnWireDL(FieldVector field_vector, float current){
 }
 
 
-cv::Vec3d Dipole::forceOnDipoleFromField(std::vector<std::vector<cv::Vec3d>>& magnetic_field){
-  cv::Vec3d force;
-
-  
-
-  return force;
-}
-
-
 // Get methods
 float Dipole::getCurrent(){
   return current;

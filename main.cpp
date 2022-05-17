@@ -41,53 +41,53 @@ void onMouse (int event, int y, int x, int flags, void* param);
 int main(){
   std::string name = "window";
   cv::namedWindow(name);
-  Motor motor(1, 0, 10, 0.00001);
-  // motor.generateCoils(0, 0, 100, 1, 250);
-  motor.generateMagnets(1, 10, 1, 1, 180, 16);
+  Motor motor(3, 0, 10, 0.00001);
+  motor.generateCoils(60, 60, 50, 10, 10);
+  // motor.generateMagnets(1, 10, 1, 1, 180, 16);
   Controller controller;
 
-  float angle = 0;
 
-  motor.setCurrentVector(angle, 100);
-  // motor.setRotorAngle(angle);
-  // float torque = motor.calculateTorque();
-  // std::cout << "Torque " << torque << std::endl;
-  cv::Mat motor_render = motor.renderMotor();
+  for(int i = 0; i < 100; i++){
+    float angle = 2*M_PI/100.0 * float(i);
 
+    motor.setCurrentVector(angle, 100);
+    // motor.setRotorAngle(angle);
+    // float torque = motor.calculateTorque();
+    // std::cout << "Torque " << torque << std::endl;
+    // cv::Mat motor_render = motor.renderMotor();
 
-  World world(0.0001, motor, controller);
-  cv::setMouseCallback(name, onMouse, (void*)&world);
+    World world(0.0001, motor, controller);
+    // cv::setMouseCallback(name, onMouse, (void*)&world);
 
-  world.generateField(0);
-  cv::Mat vector_field = world.renderVectorField();
-  cv::Mat magnitude_field = world.renderMagnitudeField();
-  cv::Mat north_south = world.renderNorthSouth();
+    world.generateField(0);
+    // cv::Mat vector_field = world.renderVectorField();
+    // cv::Mat magnitude_field = world.renderMagnitudeField();
 
-  // Coil coil(300,100, 3, 0, cv::Point2d(0, 0), 0, 12, 0.00001);
-  // cv::Mat img1 = coil.renderCoil_xz();
-  // cv::Mat img2 = coil.renderCoil_yz();
-  // cv::Mat img3 = coil.renderCoil_xy();
+    world.generateForceField();
+    cv::Mat north_south = world.renderNorthSouth();
 
-  // std::vector<float> torque_ripple = motor.generateTorqueRippleVector();
-  // for(int i = 0; i < torque_ripple.size(); i++){
-  //   std::cout << torque_ripple[i] << std::endl;
-  // }
+    // Coil coil(300,100, 3, 0, cv::Point2d(0, 0), 0, 12, 0.00001);
+    // cv::Mat img1 = coil.renderCoil_xz();
+    // cv::Mat img2 = coil.renderCoil_yz();
+    // cv::Mat img3 = coil.renderCoil_xy();
 
-
-  while(1){
-    cv::imshow(name, motor_render);
-    cv::imshow("vector", vector_field);
-    cv::imshow("magnitude", magnitude_field);
-    // cv::imshow("north south", north_south);
-    // cv::imshow("xz", img1);
-    // cv::imshow("yz", img2);
-    // cv::imshow("xy", img3);
-
-    char key = cv::waitKey(100);
-    if(key == 'q'){
-      break;
-    }
+    cv::imwrite("north_south/" + std::to_string(i) + ".png", north_south);
   }
+
+  // while(1){
+  //   // cv::imshow("motor", motor_render);
+  //   cv::imshow("vector", vector_field);
+  //   cv::imshow("magnitude", magnitude_field);
+  //   cv::imshow(name, north_south);
+  //   // cv::imshow("xz", img1);
+  //   // cv::imshow("yz", img2);
+  //   // cv::imshow("xy", img3);
+
+  //   char key = cv::waitKey(100);
+  //   if(key == 'q'){
+  //     break;
+  //   }
+  // }
   return 0;
 }
 
@@ -95,7 +95,7 @@ int main(){
 void onMouse (int event, int x, int y, int flags, void* param){
   World& world = *((World*)param);
   if(event == cv::EVENT_LBUTTONDOWN){
-    std::cout << world.getMagneticField()[y][x] << std::endl;
+    std::cout << world.getForceField()[y][x] << std::endl;
   }
 }
 

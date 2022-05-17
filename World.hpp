@@ -30,6 +30,7 @@ class World {
   Motor motor;
   Controller controller;
   std::vector<std::vector<cv::Vec3d>> magnetic_field;
+  std::vector<std::vector<cv::Vec3d>> force_field;
   cv::Vec3b getColor(float);
   cv::Vec3b getColor(cv::Vec3d);
 public:
@@ -41,6 +42,8 @@ public:
   cv::Mat renderMagnitudeField();
   cv::Mat renderVectorField();
   cv::Mat renderNorthSouth();
+  void generateForceField();
   std::vector<std::vector<cv::Vec3d>> getMagneticField();
+  std::vector<std::vector<cv::Vec3d>> getForceField();
 };
 
