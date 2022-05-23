@@ -139,28 +139,29 @@ cv::Mat World::renderMagnitudeField(){
   // Field lines
   for(int y = 0; y < result.size().height; y++){
     for(int x = 0; x < result.size().width; x++){
-      if(((y % 30) == 0) && ((x % 30) == 0)){
+      if(((y % 19) == 0) && ((x % 19) == 0)){
         cv::Vec3d field = magnetic_field[y][x];
         cv::Point2d pos = cv::Point2d(x, y);
         cv::Point2d dir = cv::Point2d(field[0], field[1]);
         dir /= cv::norm(dir);
-        dir *= 20;
+        dir *= 10;
         cv::line(result, pos, pos+dir, cv::Scalar(255, 255, 255), 1);
       }
     }
   }
 
-  // Summed up mag
-  cv::Vec3d mag_dir(0, 0, 0);
-  for(int y = 0; y < result.size().height; y++){
-    for(int x = 0; x < result.size().width; x++){
-      if(cv::norm(magnetic_field[y][x]) < 1000){
-        mag_dir += magnetic_field[y][x];
-      }
-    }
-  }
-  cv::Point offset = cv::Point(canvas_size.width/2, canvas_size.height/2);
-  cv::line(result, offset, offset + cv::Point(mag_dir[0], mag_dir[1]), cv::Scalar(123, 23, 241), 1);
+
+  // // Summed up mag
+  // cv::Vec3d mag_dir(0, 0, 0);
+  // for(int y = 0; y < result.size().height; y++){
+  //   for(int x = 0; x < result.size().width; x++){
+  //     if(cv::norm(magnetic_field[y][x]) < 1000){
+  //       mag_dir += magnetic_field[y][x];
+  //     }
+  //   }
+  // }
+  // cv::Point offset = cv::Point(canvas_size.width/2, canvas_size.height/2);
+  // cv::line(result, offset, offset + cv::Point(mag_dir[0], mag_dir[1]), cv::Scalar(123, 23, 241), 1);
 
   return result;
 }
@@ -176,7 +177,7 @@ void World::generateForceField(){
     for(int x = 0; x < canvas_size.width; x++){
       float angle = atan2(magnetic_field[y][x][1], magnetic_field[y][x][0]);
 
-      Dipole test_dipole = Dipole(cv::Point2f(-300 + x, -300 + y), angle, 100, 4, 4);
+      Dipole test_dipole = Dipole(cv::Point2f(-300 + x, -300 + y), angle, 100, 1, 4);
 
       force_field[y][x] = motor.getForceOnDipoleAtPos(test_dipole);
     }

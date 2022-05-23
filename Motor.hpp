@@ -61,8 +61,8 @@ public:
   cv::Vec3d getForceOnDipoleAtPos(Dipole);
 
   // Render
-  cv::Mat renderMotorCoils();
-  cv::Mat renderMagnets();
+  cv::Mat renderMotorCoils(cv::Mat& canvas);
+  cv::Mat renderMagnets(cv::Mat& canvas);
   cv::Mat renderMotor();
   cv::Mat renderCurrentVector();
 };

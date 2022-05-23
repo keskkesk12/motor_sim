@@ -124,25 +124,21 @@ cv::Vec3d Coil::forceOnWireDL(FieldVector field_vector, float current){
 
 
 
-cv::Mat Coil::renderCoil_xy(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-
+cv::Mat Coil::renderCoil_xy(cv::Mat& canvas){
   cv::Point offset = cv::Point(canvas_size.width/2, canvas_size.height/2);
 
   for(int i = 0; i < coil_wire_vectors.size(); i++){
     FieldVector v = coil_wire_vectors[i];
     cv::Point start = cv::Point(v.pos[0], v.pos[1]) + offset;
     cv::Point end = cv::Point(v.pos[0] + v.dir[0], v.pos[1] + v.dir[1]) + offset;
-    cv::line(canvas, start, end, cv::Scalar(255, 255, 0), 1);
+    cv::line(canvas, start, end, cv::Scalar(255, 255, 255), 1);
   }
 
   return canvas;
 }
 
 
-cv::Mat Coil::renderCoil_xz(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-
+cv::Mat Coil::renderCoil_xz(cv::Mat& canvas){
   // Center on height
   cv::Point offset = cv::Point(0, canvas_size.height/2);
 
@@ -157,9 +153,7 @@ cv::Mat Coil::renderCoil_xz(){
 }
 
 
-cv::Mat Coil::renderCoil_yz(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-
+cv::Mat Coil::renderCoil_yz(cv::Mat& canvas){
   // Center on height
   cv::Point offset = cv::Point(0, canvas_size.height/2);
 

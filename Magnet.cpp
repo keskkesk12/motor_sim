@@ -50,12 +50,6 @@ void Magnet::generateDipolesPolar(float rotor_angle){
 
 
 void Magnet::generateDipolesCartesian(){
-  // for(int i = 0; i < 10; i++){
-  //   cv::Point2f pos = cv::Point2f(-150 + 20*i, 0);
-  //   float angle = 2*M_PI/360.0 * i * 10;
-  //   Dipole temp_dipole(pos, angle, 1000, 20, 20);
-  //   dipoles.push_back(temp_dipole);
-  // }
   cv::Point2f pos = cv::Point2f(0,0);
   float angle = 0;
   Dipole temp_dipole(pos, angle, 1000, 20, 20);
@@ -73,9 +67,7 @@ cv::Vec3d Magnet::getFieldVectorAtPos(cv::Vec3d pos){
 }
 
 
-cv::Mat Magnet::renderMagnet_xy(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-
+cv::Mat Magnet::renderMagnet_xy(cv::Mat& canvas){
   cv::Point offset = cv::Point(canvas_size.width/2, canvas_size.height/2);
 
   for(int n = 0; n < dipoles.size(); n++){
@@ -85,10 +77,10 @@ cv::Mat Magnet::renderMagnet_xy(){
       cv::Point start = cv::Point(v.pos[0], v.pos[1]) + offset;
       cv::Point end = cv::Point(v.pos[0] + v.dir[0], v.pos[1] + v.dir[1]) + offset;
       if(polarity){
-        cv::line(canvas, start, end, cv::Scalar(0, 0, 255), 1);
+        cv::line(canvas, start, end, cv::Scalar(0, 0, 255), 2);
       }
       else{
-        cv::line(canvas, start, end, cv::Scalar(255, 0, 0), 1);
+        cv::line(canvas, start, end, cv::Scalar(255, 0, 0), 2);
       }
     }
   }
@@ -96,9 +88,7 @@ cv::Mat Magnet::renderMagnet_xy(){
 }
 
 
-cv::Mat Magnet::renderMagnet_xz(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-  
+cv::Mat Magnet::renderMagnet_xz(cv::Mat& canvas){
   cv::Point offset = cv::Point(0, canvas_size.height/2);
 
   for(int n = 0; n < dipoles.size(); n++){
@@ -114,9 +104,7 @@ cv::Mat Magnet::renderMagnet_xz(){
 }
 
 
-cv::Mat Magnet::renderMagnet_yz(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
-
+cv::Mat Magnet::renderMagnet_yz(cv::Mat& canvas){
   cv::Point offset = cv::Point(0, canvas_size.height/2);
 
   for(int n = 0; n < dipoles.size(); n++){

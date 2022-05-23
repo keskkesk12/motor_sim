@@ -211,27 +211,28 @@ cv::Vec3d Motor::getCurrents(){
 
 
 // Render methods
-cv::Mat Motor::renderMotorCoils(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0));
+cv::Mat Motor::renderMotorCoils(cv::Mat& canvas){
+  // cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(255, 255, 255));
   for(int i = 0; i < getCoils().size(); i++){
-    cv::add(canvas, getCoils()[i].renderCoil_xy(), canvas);
+    getCoils()[i].renderCoil_xy(canvas);
   }
   return canvas;
 }
 
 
-cv::Mat Motor::renderMagnets(){
-  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0));
+cv::Mat Motor::renderMagnets(cv::Mat& canvas){
+  // cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(255, 255, 255));
   for(int i = 0; i < magnets.size(); i++){
-    cv::add(canvas, magnets[i].renderMagnet_xy(), canvas);
+    magnets[i].renderMagnet_xy(canvas);
   }
   return canvas;
 }
 
 cv::Mat Motor::renderMotor(){
-  cv::Mat canvas = renderMotorCoils();
-  cv::add(canvas, renderMagnets(), canvas);
-  cv::add(canvas, renderCurrentVector(), canvas);
+  cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0, 0, 0));
+  canvas = renderMotorCoils(canvas);
+  canvas = renderMagnets(canvas);
+  // cv::add(canvas, renderCurrentVector(), canvas);
   return canvas;
 }
 

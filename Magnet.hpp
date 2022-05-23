@@ -38,7 +38,7 @@ public:
   cv::Vec3d getFieldVectorAtPos(cv::Vec3d);
 
   std::vector<Dipole> getDipoles();
-  cv::Mat renderMagnet_xy();
-  cv::Mat renderMagnet_xz();
-  cv::Mat renderMagnet_yz();
+  cv::Mat renderMagnet_xy(cv::Mat& canvas);
+  cv::Mat renderMagnet_xz(cv::Mat& canvas);
+  cv::Mat renderMagnet_yz(cv::Mat& canvas);
 };

@@ -39,8 +39,8 @@ public:
   cv::Vec3d calcFieldStrength(FieldVector, cv::Vec3d);
   cv::Vec3d getFieldVectorAtPos(cv::Vec3d);
   cv::Vec3d forceOnWireDL(FieldVector, float);
-  cv::Mat renderCoil_yz();
-  cv::Mat renderCoil_xz();
-  cv::Mat renderCoil_xy();
+  cv::Mat renderCoil_yz(cv::Mat& canvas);
+  cv::Mat renderCoil_xz(cv::Mat& canvas);
+  cv::Mat renderCoil_xy(cv::Mat& canvas);
 };
 
