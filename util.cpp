@@ -19,8 +19,8 @@
 
 
 
-
-cv::Size canvas_size = {600, 600};
+const uint16_t dim = 600;
+cv::Size canvas_size = {dim, dim};
 
 
 

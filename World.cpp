@@ -30,8 +30,8 @@ World::World(float _dt, Motor _motor, Controller _controller) :
   dt(_dt), motor(_motor), controller(_controller)
 {
   // Initialize magnetic field
-  magnetic_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
-  force_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+  magnetic_field = std::vector<std::vector<cv::Vec3d>>(dim, std::vector<cv::Vec3d>(dim, cv::Vec3d(0, 0, 0)));
+  force_field = std::vector<std::vector<cv::Vec3d>>(dim, std::vector<cv::Vec3d>(dim, cv::Vec3d(0, 0, 0)));
 }
 
 
@@ -49,10 +49,10 @@ void World::generateField(double z){
   // Generate vector field in xy-plane at given z-height
 
   // Reset magnetic field
-  magnetic_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+  magnetic_field = std::vector<std::vector<cv::Vec3d>>(dim, std::vector<cv::Vec3d>(dim, cv::Vec3d(0, 0, 0)));
 
   // Center view
-  cv::Vec3d offset(-300, -300, 0);
+  cv::Vec3d offset(-dim/2, -dim/2, 0);
   
   // Generate field for coils
   for(int n = 0; n < motor.getCoils().size(); n++){
@@ -136,19 +136,19 @@ cv::Mat World::renderMagnitudeField(){
     }
   }
 
-  // Field lines
-  for(int y = 0; y < result.size().height; y++){
-    for(int x = 0; x < result.size().width; x++){
-      if(((y % 19) == 0) && ((x % 19) == 0)){
-        cv::Vec3d field = magnetic_field[y][x];
-        cv::Point2d pos = cv::Point2d(x, y);
-        cv::Point2d dir = cv::Point2d(field[0], field[1]);
-        dir /= cv::norm(dir);
-        dir *= 10;
-        cv::line(result, pos, pos+dir, cv::Scalar(255, 255, 255), 1);
-      }
-    }
-  }
+  // // Field lines
+  // for(int y = 0; y < result.size().height; y++){
+  //   for(int x = 0; x < result.size().width; x++){
+  //     if(((y % 19) == 0) && ((x % 19) == 0)){
+  //       cv::Vec3d field = magnetic_field[y][x];
+  //       cv::Point2d pos = cv::Point2d(x, y);
+  //       cv::Point2d dir = cv::Point2d(field[0], field[1]);
+  //       dir /= cv::norm(dir);
+  //       dir *= 10;
+  //       cv::line(result, pos, pos+dir, cv::Scalar(255, 255, 255), 1);
+  //     }
+  //   }
+  // }
 
 
   // // Summed up mag
@@ -171,13 +171,14 @@ cv::Mat World::renderMagnitudeField(){
 
 void World::generateForceField(){
   // Reset force field
-  force_field = std::vector<std::vector<cv::Vec3d>>(600, std::vector<cv::Vec3d>(600, cv::Vec3d(0, 0, 0)));
+  force_field = std::vector<std::vector<cv::Vec3d>>(dim, std::vector<cv::Vec3d>(dim, cv::Vec3d(0, 0, 0)));
 
   for(int y = 0; y < canvas_size.height; y++){
     for(int x = 0; x < canvas_size.width; x++){
       float angle = atan2(magnetic_field[y][x][1], magnetic_field[y][x][0]);
 
-      Dipole test_dipole = Dipole(cv::Point2f(-300 + x, -300 + y), angle, 100, 1, 4);
+      // Dipole test_dipole = Dipole(cv::Point2f(-dim/2 + x, -dim/2 + y), angle, 10000, .1, 4);
+      Dipole test_dipole = Dipole(cv::Point2f(-dim/2 + x, -dim/2 + y), angle, 100, 1, 4);
 
       force_field[y][x] = motor.getForceOnDipoleAtPos(test_dipole);
     }

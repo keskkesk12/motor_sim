@@ -41,8 +41,8 @@ void onMouse (int event, int y, int x, int flags, void* param);
 int main(){
   std::string name = "window";
   cv::namedWindow(name);
-  Motor motor(3, 0, 10, 0.00001);
-  motor.generateCoils(120, 70, 60, 8, 16);
+  Motor motor(1, 0, 10, 0.00001);
+  motor.generateCoils(300, -150, 70, 4, 30);
   // motor.generateMagnets(1, 1000, 1, 1, 180, 8);
   Controller controller;
 
@@ -51,7 +51,7 @@ int main(){
   // std::cout << "Torque " << torque << std::endl;
   float angle = 0;
 
-  motor.setCurrentVector(angle, 100);
+  motor.setCurrentVector(angle, 300);
 
   cv::Mat motor_render = motor.renderMotor();
 
@@ -60,28 +60,31 @@ int main(){
   World world(0.0001, motor, controller);
 
   world.generateField(0);
-  cv::Mat vector_field = world.renderVectorField();
-  cv::Mat magnitude_field = world.renderMagnitudeField();
+  // cv::Mat vector_field = world.renderVectorField();
+  // cv::Mat magnitude_field = world.renderMagnitudeField();
 
   world.generateForceField();
   cv::Mat north_south = world.renderNorthSouth();
 
-  cv::imwrite("figures/magnetic_fields/stator_magnetude.png", magnitude_field);
-  cv::imwrite("figures/magnetic_fields/stator_north_south.png", north_south);
-  cv::imwrite("figures/magnetic_fields/stator_render.png", motor_render);
+  // cv::imwrite("figures/magnetic_fields/stator_magnetude.png", magnitude_field);
+  // cv::imwrite("figures/magnetic_fields/stator_north_south.png", north_south);
+  // cv::imwrite("figures/magnetic_fields/stator_render.png", motor_render);
 
-  // Coil coil(300,100, 3, 0, cv::Point2d(0, 0), 0, 12, 0.00001);
-  // cv::Mat img1 = coil.renderCoil_xz();
+  // Coil coil(500,175, 4, 0, cv::Point2d(0, 0), 50, 30, 0.00001);
+  // cv::Mat canvas = cv::Mat(canvas_size, CV_8UC3, cv::Scalar(0));
+  // cv::Mat img1 = coil.renderCoil_xz(canvas);
+  // cv::imwrite("figures/coil_4t_30res.png", img1);
+  cv::imwrite("figures/north_south.png", north_south);
   // cv::Mat img2 = coil.renderCoil_yz();
   // cv::Mat img3 = coil.renderCoil_xy();
 
 
   while(1){
-    cv::imshow("motor", motor_render);
+    // cv::imshow("motor", motor_render);
     // cv::imshow("vector", vector_field);
     // cv::imshow("magnitude", magnitude_field);
-    // cv::imshow(name, north_south);
-    // cv::imshow("xz", img1);
+    cv::imshow(name, north_south);
+    // cv::imshow(name, img1);
     // cv::imshow("yz", img2);
     // cv::imshow("xy", img3);
 

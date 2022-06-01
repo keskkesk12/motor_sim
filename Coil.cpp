@@ -146,7 +146,8 @@ cv::Mat Coil::renderCoil_xz(cv::Mat& canvas){
     FieldVector v = coil_wire_vectors[i];
     cv::Point start = cv::Point(v.pos[0], v.pos[2]) + offset;
     cv::Point end = cv::Point(v.dir[0] + v.pos[0], v.dir[2] + v.pos[2]) + offset;
-    cv::line(canvas, start, end, cv::Scalar(255, 255, 0), 1);
+    cv::line(canvas, start, end, cv::Scalar(200, 200, 200), 1);
+    cv::circle(canvas, start, 2, cv::Scalar(255, 255, 255), -1);
   }
 
   return canvas;

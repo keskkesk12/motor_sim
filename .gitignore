@@ -7,5 +7,6 @@
 *.csv
 *.ods
 *.py
-
+*.log
+*.avi
 

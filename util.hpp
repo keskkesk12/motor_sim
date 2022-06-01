@@ -25,7 +25,7 @@ struct FieldVector{
   cv::Vec3d dir = cv::Vec3d(0, 0, 0);
 };
 
-
+extern const uint16_t dim;
 extern cv::Size canvas_size;
 
 // template <typename T> int sign(T val);
